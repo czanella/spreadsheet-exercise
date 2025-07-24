@@ -42,6 +42,11 @@ const UNARY_OPERATIONS: Record<string, Operation> = {
   }
 };
 
+const OPEN_PARENTHESIS: Operation = {
+  arguments: 0,
+  precedence: 0,
+};
+
 export function *infixToPostfix(tokens: Iterable<string>) {
   let consumedNumber = false;
   let operationStack: Operation[] = [];
@@ -59,6 +64,27 @@ export function *infixToPostfix(tokens: Iterable<string>) {
     if (variableValidator(token)) {
       yield token;
       consumedNumber = true;
+      continue;
+    }
+
+    // Special case: parenthesis
+    if (token === '(') {
+      operationStack.push(OPEN_PARENTHESIS);
+      consumedNumber = false;
+      continue;
+    }
+
+    if (token === ')') {
+      while (operationStack.length > 0) {
+        const op = operationStack.pop();
+        if (op === OPEN_PARENTHESIS) {
+          break;
+        }
+        yield op;
+      }
+      if (operationStack.length === 0) {
+        throw new Error('Unmatched \')\'');
+      }
       continue;
     }
 
@@ -82,6 +108,10 @@ export function *infixToPostfix(tokens: Iterable<string>) {
   }
 
   while(operationStack.length > 0) {
-    yield operationStack.pop();
+    const operation = operationStack.pop();
+    if (operation === OPEN_PARENTHESIS) {
+      throw new Error('Unmatched \'(\'');
+    }
+    yield operation;
   }
 }

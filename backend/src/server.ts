@@ -2,7 +2,9 @@ import { expressionTokenizer, expressionValidator, infixToPostfix } from './expr
 
 for (const expression of [
   '=2+3',
-  //'=A1+B2*(C3/E4)*23.34',
+  '=2*(3+4)',
+  '=2+3*4',
+  '=A1+B2*(C3/E4)*23.34',
   //'=A23.34',
 ]) {
   if (expressionValidator(expression)) {
