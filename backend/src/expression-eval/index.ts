@@ -1,2 +1,4 @@
+export { infixToPostfix } from './infixToPostfix';
 export { expressionTokenizer } from './tokenizer';
-export { expressionValidator } from './validator';
+export { expressionValidator } from './validators';
+
